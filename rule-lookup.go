@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	v1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -14,26 +14,31 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 5 {
-		log.Fatalf("Usage: %s <namespace> <verb> <resource> <api-group>\n", os.Args[0])
+	var namespace string
+	var verb string
+	var resource string
+	var apiGroup string
+
+	// Define flags
+	flag.StringVar(&namespace, "namespace", "", "Namespace to search for roles")
+	flag.StringVar(&verb, "verb", "*", "Verb to search for in role rules")
+	flag.StringVar(&resource, "resource", "", "Resource to search for in role rules")
+	flag.StringVar(&apiGroup, "api-group", "", "API group to search for in role rules")
+
+	// Parse flags
+	flag.Parse()
+
+	if resource == "" {
+		fmt.Println("resource cannot be empty")
+		os.Exit(1)
 	}
-
-	namespace := os.Args[1]
-	verb := os.Args[2]
-	resource := os.Args[3]
-	apiGroup := os.Args[4]
-
-	// config, err := rest.InClusterConfig()
-	// if err != nil {
-	// 	log.Fatalf("Failed to create Kubernetes config: %v\n", err)
-	// }
 
 	homedir, _ := os.UserHomeDir()
 
 	config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
 		&clientcmd.ClientConfigLoadingRules{ExplicitPath: homedir + "/.kube/config"}, &clientcmd.ConfigOverrides{}).ClientConfig()
 	if err != nil {
-		fmt.Printf("%s: can't create config from kubeConfigPath: %s\n", time.Now().Format(time.RFC3339), err.Error())
+		fmt.Printf("ERROR: can't create config from user's kubeconfig: %s\n", err.Error())
 		os.Exit(1)
 	}
 
@@ -58,16 +63,18 @@ func main() {
 		}
 	}
 
-	roleOpts := metav1.ListOptions{}
-	roleList, err := clientset.RbacV1().Roles(namespace).List(ctx, roleOpts)
-	if err != nil {
-		log.Fatalf("Failed to list Roles: %v\n", err)
-	}
+	if namespace != "" {
+		roleOpts := metav1.ListOptions{}
+		roleList, err := clientset.RbacV1().Roles(namespace).List(ctx, roleOpts)
+		if err != nil {
+			log.Fatalf("Failed to list Roles: %v\n", err)
+		}
 
-	// Check each Role for matching rules
-	for _, role := range roleList.Items {
-		if rulematching(role.Rules, apiGroup, resource, verb) {
-			fmt.Printf("role/%s\n", role.Name)
+		// Check each Role for matching rules
+		for _, role := range roleList.Items {
+			if rulematching(role.Rules, apiGroup, resource, verb) {
+				fmt.Printf("role/%s\n", role.Name)
+			}
 		}
 	}
 }
