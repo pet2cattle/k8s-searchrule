@@ -21,9 +21,13 @@ func main() {
 
 	// Define flags
 	flag.StringVar(&namespace, "namespace", "", "Namespace to search for roles")
+	flag.StringVar(&namespace, "n", "", "Namespace to search for roles (shorthand)")
 	flag.StringVar(&verb, "verb", "*", "Verb to search for in role rules")
+	flag.StringVar(&verb, "v", "*", "Verb to search for in role rules (shorthand)")
 	flag.StringVar(&resource, "resource", "", "Resource to search for in role rules")
+	flag.StringVar(&resource, "r", "", "Resource to search for in role rules (shorthand)")
 	flag.StringVar(&apiGroup, "api-group", "", "API group to search for in role rules")
+	flag.StringVar(&apiGroup, "g", "", "API group to search for in role rules (shorthand)")
 
 	// Parse flags
 	flag.Parse()
