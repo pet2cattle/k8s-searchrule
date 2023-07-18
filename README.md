@@ -2,6 +2,7 @@
 
 ## Install
 
+Copy the binary to any folder within the `PATH`:
 
 ```
 $ sudo cp ./kubectl-searchrule /usr/local/bin/
@@ -30,15 +31,14 @@ Usage of /usr/local/bin/kubectl-searchrule:
     	Verb to search for in role rules (default "*")
 ```
 
+Search for namespaced resources:
 
 ```
 $ kubectl searchrule -n <namespace> -n <verb> -r <resource> -g <api-group>
 ```
 
+Search for cluster resouces:
 
-$ kubectl searchrule -v '*' -r namespaces  -n pet2cattle-gitops
-clusterrole/backplane-srep-admins-cluster
-clusterrole/cluster-image-registry-operator
-clusterrole/pet2cattle-dns-operator
-clusterrole/pet2cattle-argocd-application-controller
-clusterrole/pet2cattle-ingress-operator
+```
+$ kubectl searchrule -n <verb> -r <resource> -g <api-group>
+```
