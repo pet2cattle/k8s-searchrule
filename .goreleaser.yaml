@@ -1,4 +1,4 @@
-project_name: kubectl-rule-lookup
+project_name: kubectl-searchrule
 builds:
   - goos:
       - linux
@@ -8,7 +8,7 @@ builds:
       - amd64
       - arm64
     main: ./rule-lookup.go
-    binary: kubectl-rule-lookup
+    binary: kubectl-searchrule
     env:
       - CGO_ENABLED=0
       - >-
