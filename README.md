@@ -31,14 +31,14 @@ Usage of /usr/local/bin/kubectl-searchrule:
     	Verb to search for in role rules (default "*")
 ```
 
-Search for namespaced resources:
-
-```
-$ kubectl searchrule -n <namespace> -n <verb> -r <resource> -g <api-group>
-```
-
 Search for cluster resouces:
 
 ```
 $ kubectl searchrule -n <verb> -r <resource> -g <api-group>
+```
+
+Include namespaced resources as well:
+
+```
+$ kubectl searchrule -n <namespace> -n <verb> -r <resource> -g <api-group>
 ```
